@@ -8,20 +8,8 @@
     
     <style>
         :root { --bg: #020205; --text: #ffffff; --border: rgba(255, 255, 255, 0.1); --accent-text: #666666; }
-        
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box; 
-            -ms-overflow-style: none; scrollbar-width: none;
-        }
-        *::-webkit-scrollbar { display: none; }
-
-        body { 
-            font-family: "Helvetica Neue", Arial, sans-serif; 
-            background-color: var(--bg); color: #fff; 
-            min-height: 100vh; width: 100vw; 
-            display: flex; justify-content: center; align-items: center; 
-            overflow: hidden; perspective: 1000px; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Helvetica Neue", Arial, sans-serif; background-color: var(--bg); color: #fff; min-height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; overflow: hidden; perspective: 1000px; }
         
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease; }
         .loader-text { font-family: monospace; font-size: 10px; letter-spacing: 4px; color: #fff; margin-bottom: 15px; }
@@ -32,43 +20,34 @@
         body.loaded #preloader { opacity: 0; pointer-events: none; }
         body.loaded .content-wrapper { opacity: 1; transform: translateY(0); }
         
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: radial-gradient(circle at center, #0a0a15 0%, #020205 100%); display: block; }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: radial-gradient(circle at center, #0a0a15 0%, #020205 100%); }
         
-        .content-wrapper { position: relative; z-index: 10; width: 100%; max-width: 800px; padding: 20px; opacity: 0; transform: translateY(20px); transition: opacity 1.5s ease, transform 1.5s ease; }
-        .brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 30px; display: block; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        .intro { font-size: clamp(20px, 4vw, 30px); line-height: 1.2; font-weight: 500; letter-spacing: -1px; margin-bottom: 30px; }
+        .content-wrapper { position: relative; z-index: 10; width: 100%; max-width: 800px; padding: 20px; opacity: 0; transform: translateY(20px); transition: opacity 1.5s ease, transform 1.5s ease; overflow-y: auto; max-height: 100vh; padding-bottom: 100px; }
+        .brand { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 40px; display: block; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .intro { font-size: clamp(22px, 5vw, 34px); line-height: 1.2; font-weight: 500; letter-spacing: -1px; margin-bottom: 40px; }
         .intro span { color: var(--accent-text); }
         
-        .list { display: flex; flex-direction: column; gap: 12px; }
-        .item { padding: 20px 30px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(5px); border: 1px solid var(--border); border-radius: 20px; text-decoration: none; color: inherit; display: flex; justify-content: space-between; align-items: center; transition: 0.1s ease-out; transform-style: preserve-3d; }
+        .list { display: flex; flex-direction: column; gap: 15px; }
+        .item { padding: 25px 35px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(5px); border: 1px solid var(--border); border-radius: 20px; text-decoration: none; color: inherit; display: flex; justify-content: space-between; align-items: center; transition: 0.1s ease-out; transform-style: preserve-3d; }
         .item:hover { border-color: rgba(255,255,255,0.4); background: rgba(255, 255, 255, 0.07); box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
         .list:hover .item { opacity: 0.3; }
         .list .item:hover { opacity: 1 !important; }
         
-        .item h3 { font-size: 17px; text-transform: uppercase; margin-bottom: 3px; }
-        .item p { font-size: 12px; color: #999; }
-        .arrow { font-size: 18px; color: #444; transition: 0.4s; }
-        .item:hover .arrow { color: #fff; transform: translateX(8px); }
+        .item h3 { font-size: 18px; text-transform: uppercase; margin-bottom: 5px; }
+        .item p { font-size: 13px; color: #999; }
+        .arrow { font-size: 20px; color: #444; transition: 0.4s; }
+        .item:hover .arrow { color: #fff; transform: translateX(10px); }
 
-        /* СИСТЕМНЫЙ ВИДЖЕТ */
-        .sys-status {
-            position: fixed; bottom: 20px; left: 20px; z-index: 100;
-            font-family: monospace; font-size: 9px; color: #444;
-            line-height: 1.6; text-transform: uppercase; letter-spacing: 1px;
-        }
-        .sys-status span { color: #888; }
-        .sys-status .active-val { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
-
-        .traffic-box { margin-top: 25px; display: flex; flex-direction: column; align-items: center; opacity: 0.4; }
+        .traffic-box { margin-top: 30px; display: flex; flex-direction: column; align-items: center; opacity: 0.4; }
         .traffic-label { font-family: monospace; font-size: 8px; letter-spacing: 2px; color: #555; margin-bottom: 5px; }
-        #traffic-graph { width: 140px; height: 20px; }
+        #traffic-graph { width: 160px; height: 25px; }
 
         #modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #05050a; border: 1px solid #333; padding: 40px; border-radius: 20px; z-index: 10000; text-align: center; visibility: hidden; opacity: 0; transition: 0.3s; }
         #modal.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); }
         #modal button { background: #fff; color: #000; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
         #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9998; visibility: hidden; opacity: 0; transition: 0.3s; }
         #overlay.active { visibility: visible; opacity: 1; }
-        footer { margin-top: 20px; font-size: 8px; color: #333; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+        footer { margin-top: 30px; font-size: 9px; color: #333; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -79,23 +58,18 @@
     </div>
     
     <canvas id="bg-canvas"></canvas>
-
-    <!-- СИСТЕМНЫЙ ВИДЖЕТ -->
-    <div class="sys-status">
-        NODE: <span class="active-val">OBK_CENTRAL</span><br>
-        UPLINK: <span id="sys-ip">SCANNING...</span><br>
-        STATUS: <span style="color: #0f0;">ENCRYPTED</span><br>
-        UPTIME: <span id="sys-uptime" class="active-val">00:00:00:00</span>
-    </div>
     
     <div class="content-wrapper">
-        <header><span class="brand">Project OBK — System v2.0</span><h1 class="intro">Агентство цифровых коммуникаций. <span id="typed-text"></span></h1></header>
+        <header>
+            <span class="brand">Project OBK — System v2.0</span>
+            <h1 class="intro">Агентство цифровых коммуникаций. <span id="typed-text"></span></h1>
+        </header>
         <main class="list">
-            <a href="https://t.me/+QksQBt-FQa42Yjky" class="item"><div><h3>Telegram</h3><p>Наш официальный канал.</p></div><div class="arrow">→</div></a>
-            <a href="https://pastebin.com/raw/WmeyFuxL" class="item"><div><h3>Услуги</h3><p>OSINT и кибербезопасность.</p></div><div class="arrow">→</div></a>
+            <a href="https://t.me" class="item"><div><h3>Telegram</h3><p>Наш официальный канал.</p></div><div class="arrow">→</div></a>
+            <a href="https://pastebin.com" class="item"><div><h3>Услуги</h3><p>OSINT и кибербезопасность.</p></div><div class="arrow">→</div></a>
             <a href="#" class="item" onclick="showModal(event)"><div><h3>Личный архив</h3><p>Закрытая база знаний.</p></div><div class="arrow">→</div></a>
-            <a href="https://t.me/wiuzi" class="item"><div><h3>Связь</h3><p>Оперативная поддержка в Telegram.</p></div><div class="arrow">→</div></a>
-            <a href="https://t.me/repa_zero" class="item"><div><h3>Отзывы</h3><p>Достоверные данные от клиентов.</p></div><div class="arrow">→</div></a>
+            <a href="https://t.me" class="item"><div><h3>Связь</h3><p>Оперативная поддержка в Telegram.</p></div><div class="arrow">→</div></a>
+            <a href="https://t.me" class="item"><div><h3>Отзывы</h3><p>Достоверные данные от клиентов.</p></div><div class="arrow">→</div></a>
         </main>
         
         <div class="traffic-box">
@@ -109,7 +83,10 @@
     </div>
 
     <div id="overlay" onclick="hideModal()"></div>
-    <div id="modal"><p style="color:#fff;">Архив закрыт.<br><span style="color:#555;font-size:13px;">Свяжитесь с техподдержкой.</span></p><button onclick="hideModal()">Понятно</button></div>
+    <div id="modal">
+        <p style="color:#fff;">Архив закрыт.<br><span style="color:#555;font-size:13px;">Свяжитесь с техподдержкой.</span></p>
+        <button onclick="hideModal()">Понятно</button>
+    </div>
 
     <script>
         const canvas = document.getElementById('bg-canvas');
@@ -118,21 +95,13 @@
         let particles = [], stars = [], tick = 0;
         let mouseX = -1000, mouseY = -1000;
         let currentX = 0, currentY = 0, targetX = 0, targetY = 0;
+        
+        // Настройки адаптивности
+        let particleCount = 150;
+        let connectionDist = 200;
+        let mouseDist = 220;
 
-        // --- ДИНАМИКА ВИДЖЕТА ---
-        const startTime = Date.now();
-        function updateSysStatus() {
-            const now = Date.now();
-            const diff = now - startTime;
-            const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
-            const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
-            const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
-            const ms = Math.floor((diff % 1000) / 10).toString().padStart(2, '0');
-            document.getElementById('sys-uptime').innerText = `${h}:${m}:${s}:${ms}`;
-        }
-        setInterval(updateSysStatus, 50);
-        setTimeout(() => { document.getElementById('sys-ip').innerText = "SECURED_CONNECTION"; }, 2500);
-
+        // Цикл фавикона
         const icons = ["📡", "🔍", "🛰️", "⚡"];
         let iconIdx = 0;
         setInterval(() => {
@@ -140,6 +109,7 @@
             iconIdx = (iconIdx + 1) % icons.length;
         }, 1500);
 
+        // График
         const trafficLine = document.getElementById('traffic-line');
         let points = Array(40).fill(30);
         function updateTraffic() {
@@ -155,6 +125,7 @@
             targetY = (e.clientY - window.innerHeight / 2) * 0.05;
         });
 
+        // 3D эффект наведения
         document.querySelectorAll('.item').forEach(el => {
             el.addEventListener('mousemove', (e) => {
                 const r = el.getBoundingClientRect();
@@ -164,10 +135,21 @@
         });
 
         function init() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight;
             particles = []; stars = [];
+
+            // Адаптация под устройство
+            if (window.innerWidth < 480) { 
+                particleCount = 45; connectionDist = 90; mouseDist = 120;
+            } else if (window.innerWidth < 1024) { 
+                particleCount = 85; connectionDist = 150; mouseDist = 180;
+            } else { 
+                particleCount = 150; connectionDist = 200; mouseDist = 220;
+            }
+
             for (let i = 0; i < 150; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*1.2, o: Math.random() });
-            for (let i = 0; i < 150; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4 });
+            for (let i = 0; i < particleCount; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4 });
         }
 
         function animate() {
@@ -186,8 +168,8 @@
                 if(p.x<0 || p.x>canvas.width) p.vx*=-1; if(p.y<0 || p.y>canvas.height) p.vy*=-1;
                 const dx = p.x - mCanvasX; const dy = p.y - mCanvasY; const dist = Math.sqrt(dx*dx + dy*dy);
 
-                if (dist < 220) {
-                    ctx.strokeStyle = `rgba(255,255,255,${0.6 * (1 - dist/220)})`;
+                if (dist < mouseDist) {
+                    ctx.strokeStyle = `rgba(255,255,255,${0.6 * (1 - dist/mouseDist)})`;
                     ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p.x - currentX, p.y - currentY); ctx.lineTo(mouseX, mouseY); ctx.stroke();
                 }
 
@@ -197,8 +179,8 @@
                 for (let j = i + 1; j < particles.length; j++) {
                     const p2 = particles[j];
                     const distL = Math.sqrt((p.x - p2.x)**2 + (p.y - p2.y)**2);
-                    if (distL < 200) {
-                        ctx.strokeStyle = `rgba(255,255,255,${0.4 * (1 - distL/200)})`;
+                    if (distL < connectionDist) {
+                        ctx.strokeStyle = `rgba(255,255,255,${0.4 * (1 - distL/connectionDist)})`;
                         ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(p.x - currentX, p.y - currentY); ctx.lineTo(p2.x - currentX, p2.y - currentY); ctx.stroke();
                     }
                 }
@@ -215,6 +197,8 @@
 
         window.addEventListener('resize', init);
         init(); animate();
+
+        // Логика загрузки
         let c = 0;
         const iv = setInterval(() => {
             c += Math.floor(Math.random()*10);
@@ -227,4 +211,3 @@
     </script>
 </body>
 </html>
-
